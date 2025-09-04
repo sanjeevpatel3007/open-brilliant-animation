@@ -3,6 +3,7 @@ import { useState } from "react";
 import ProjectileMotion from "./ProjectileMotion";
 import SpringOscillation from "./SpringOscillation";
 import PendulumMotion from "./PendulumMotion";
+import WaveVibration from "./WaveVibration";
 
 interface Message {
   role: "user" | "ai";
@@ -22,6 +23,9 @@ interface ModuleData {
     damping?: number;
     length?: number;
     initialAngle?: number;
+    frequency?: number;
+    wavelength?: number;
+    waveType?: "transverse" | "longitudinal";
   };
 }
 
@@ -86,6 +90,18 @@ export default function Chat() {
             timeStep: data.inputs?.timeStep || 0.05
           }
         });
+      } else if (data.module === "WaveVibration") {
+        setModuleData({ 
+          module: data.module, 
+          inputs: {
+            frequency: data.inputs?.frequency || 1,
+            amplitude: data.inputs?.amplitude || 1,
+            wavelength: data.inputs?.wavelength || 2,
+            damping: data.inputs?.damping || 0,
+            timeStep: data.inputs?.timeStep || 0.05,
+            waveType: data.inputs?.waveType || "transverse"
+          }
+        });
       } else {
         setModuleData(null);
       }
@@ -109,7 +125,7 @@ export default function Chat() {
     }
   };
 
-  const hasAnimation = moduleData?.module === "ProjectileMotion" || moduleData?.module === "SpringOscillation" || moduleData?.module === "PendulumMotion";
+  const hasAnimation = moduleData?.module === "ProjectileMotion" || moduleData?.module === "SpringOscillation" || moduleData?.module === "PendulumMotion" || moduleData?.module === "WaveVibration";
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -135,7 +151,7 @@ export default function Chat() {
             <div className={`overflow-y-auto p-4 space-y-4 ${hasAnimation ? 'h-96' : 'h-96'}`}>
               {messages.length === 0 ? (
                 <div className="text-gray-500 text-center py-8">
-                  <p>Try asking: "What is Newton's first law?" or "Show me projectile motion with velocity 15 m/s and angle 60°" or "Show me a spring oscillation with mass 2kg" or "Show me a pendulum with length 2m"</p>
+                  <p>Try asking: "What is Newton's first law?" or "Show me projectile motion with velocity 15 m/s and angle 60°" or "Show me a spring oscillation with mass 2kg" or "Show me a pendulum with length 2m" or "Show me a wave with frequency 2Hz"</p>
                 </div>
               ) : (
                 messages.map((message, index) => (
@@ -233,6 +249,16 @@ export default function Chat() {
                     gravity={moduleData.inputs.gravity!}
                     damping={moduleData.inputs.damping!}
                     timeStep={moduleData.inputs.timeStep!}
+                  />
+                )}
+                {moduleData.module === "WaveVibration" && (
+                  <WaveVibration 
+                    frequency={moduleData.inputs.frequency!}
+                    amplitude={moduleData.inputs.amplitude!}
+                    wavelength={moduleData.inputs.wavelength!}
+                    damping={moduleData.inputs.damping!}
+                    timeStep={moduleData.inputs.timeStep!}
+                    waveType={moduleData.inputs.waveType!}
                   />
                 )}
               </div>
