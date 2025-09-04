@@ -265,9 +265,9 @@ export default function Chat() {
                                         <h3 className="text-lg font-semibold text-black mb-2">{animation.name}</h3>
                                         <p className="text-gray-600 mb-3">{animation.description}</p>
                                         <div className="bg-gray-100 p-3 rounded">
-                                            <p className="text-sm text-gray-700">
-                                                <strong>Example:</strong> "{animation.example}"
-                                            </p>
+                                                                                         <p className="text-sm text-gray-700">
+                                                 <strong>Example:</strong> &ldquo;{animation.example}&rdquo;
+                                             </p>
                                         </div>
                                     </div>
                                 ))}
