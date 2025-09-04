@@ -2,6 +2,7 @@
 import { useState } from "react";
 import ProjectileMotion from "./ProjectileMotion";
 import SpringOscillation from "./SpringOscillation";
+import PendulumMotion from "./PendulumMotion";
 
 interface Message {
   role: "user" | "ai";
@@ -19,6 +20,8 @@ interface ModuleData {
     springConstant?: number;
     amplitude?: number;
     damping?: number;
+    length?: number;
+    initialAngle?: number;
   };
 }
 
@@ -71,6 +74,18 @@ export default function Chat() {
             timeStep: data.inputs?.timeStep || 0.05
           }
         });
+      } else if (data.module === "PendulumMotion") {
+        setModuleData({ 
+          module: data.module, 
+          inputs: {
+            length: data.inputs?.length || 1,
+            mass: data.inputs?.mass || 1,
+            initialAngle: data.inputs?.initialAngle || 30,
+            gravity: data.inputs?.gravity || 9.8,
+            damping: data.inputs?.damping || 0,
+            timeStep: data.inputs?.timeStep || 0.05
+          }
+        });
       } else {
         setModuleData(null);
       }
@@ -94,7 +109,7 @@ export default function Chat() {
     }
   };
 
-  const hasAnimation = moduleData?.module === "ProjectileMotion" || moduleData?.module === "SpringOscillation";
+  const hasAnimation = moduleData?.module === "ProjectileMotion" || moduleData?.module === "SpringOscillation" || moduleData?.module === "PendulumMotion";
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -120,7 +135,7 @@ export default function Chat() {
             <div className={`overflow-y-auto p-4 space-y-4 ${hasAnimation ? 'h-96' : 'h-96'}`}>
               {messages.length === 0 ? (
                 <div className="text-gray-500 text-center py-8">
-                  <p>Try asking: "What is Newton's first law?" or "Show me projectile motion with velocity 15 m/s and angle 60°" or "Show me a spring oscillation with mass 2kg"</p>
+                  <p>Try asking: "What is Newton's first law?" or "Show me projectile motion with velocity 15 m/s and angle 60°" or "Show me a spring oscillation with mass 2kg" or "Show me a pendulum with length 2m"</p>
                 </div>
               ) : (
                 messages.map((message, index) => (
@@ -206,6 +221,16 @@ export default function Chat() {
                     mass={moduleData.inputs.mass!}
                     springConstant={moduleData.inputs.springConstant!}
                     amplitude={moduleData.inputs.amplitude!}
+                    damping={moduleData.inputs.damping!}
+                    timeStep={moduleData.inputs.timeStep!}
+                  />
+                )}
+                {moduleData.module === "PendulumMotion" && (
+                  <PendulumMotion 
+                    length={moduleData.inputs.length!}
+                    mass={moduleData.inputs.mass!}
+                    initialAngle={moduleData.inputs.initialAngle!}
+                    gravity={moduleData.inputs.gravity!}
                     damping={moduleData.inputs.damping!}
                     timeStep={moduleData.inputs.timeStep!}
                   />
